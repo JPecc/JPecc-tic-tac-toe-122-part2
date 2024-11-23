@@ -21,12 +21,9 @@ bool checkWinNormal(const string cells[], const string mark) {
     return false;
 }
 
-
 bool checkWinBattle(const string cells[], const string mark) {
-    if (checkWinNormal(cells, mark)) {
-        return true;
-    }
-    if (cells[0] == mark && cells[2] == mark && cells[6] == mark) {
+    // Only Player 1 can use this
+    if (mark == "X" && checkWinNormal(cells, mark)) {
         return true;
     }
     return false;
@@ -71,8 +68,10 @@ int main() {
     bool game_over = false;
     bool battle_mode = false;
 
+    cout << "Welcome To The TIC-TAC-TOE simulator\n" << endl;
+
     cout << "Choose a game mode:\n";
-    cout << "1) Normal Tic-Tac-Toe\n";
+    cout << "1) Regular Tic-Tac-Toe\n";
     cout << "2) Battle Tic-Tac-Toe\n";
     cout << "Enter your choice (1 or 2): ";
     int choice;
@@ -99,8 +98,12 @@ int main() {
             if (cell_choice == "exit") {
                 game_over = true;
                 break;
-            } else if (battle_mode && cell_choice == "r") {
+            } else if (battle_mode && cell_choice == "r" && current_mark == mark_player2) {
                 resetGame(cells, current_mark, game_over);
+                current_mark = mark_player1;  // After reset, Player 1's turn
+                invalid = false;
+            } else if (battle_mode && current_mark == mark_player1 && cell_choice == "r") {
+                cout << "Player 1 cannot reset the game!" << endl;
                 invalid = false;
             } else if (cell_choice.length() != 1 || !isdigit(cell_choice[0])) {
                 cout << "Invalid input. Please enter a single digit from 1 to 9." << endl;
@@ -114,7 +117,7 @@ int main() {
                     cells[cell] = current_mark;
                     invalid = false;
 
-                    bool player_wins = battle_mode ? checkWinBattle(cells, current_mark) : checkWinNormal(cells, current_mark);
+                    bool player_wins = battle_mode && current_mark == mark_player1 ? checkWinBattle(cells, current_mark) : checkWinNormal(cells, current_mark);
                     if (player_wins) {
                         displayBoard(cells);
                         cout << "Player " << (current_mark == mark_player1 ? "1" : "2") << " wins!" << endl;
