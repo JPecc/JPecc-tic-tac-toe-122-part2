@@ -14,10 +14,6 @@ bool checkWinNormal(const string cells[], const string mark) {
             return true;
         }
     }
-    if ((cells[0] == mark && cells[4] == mark && cells[8] == mark) ||
-        (cells[2] == mark && cells[4] == mark && cells[6] == mark)) {
-        return true;
-    }
     return false;
 }
 
